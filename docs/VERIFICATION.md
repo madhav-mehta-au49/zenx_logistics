@@ -132,3 +132,11 @@ Final News desktop inspection at 1280px: no horizontal overflow; all six rendere
 - Reload scroll reset: InitialLoader sets history.scrollRestoration='manual' and scrolls to top on load, so pages open at the hero rather than a restored mid-page position.
 - GitHub: initialised the repo on 'main', committed (8b99eff) and pushed to https://github.com/madhav-mehta-au49/zenx_logistics ; remote refs/heads/main matches local HEAD and the working tree is clean.
 - Vercel: redeployed to production; alias https://zenxlogistics.vercel.app returns 200 with the Stitch footer and legal name present.
+
+## 2026-10-10 - Stitch header, container clash fix, full responsive audit
+
+- Header rebuilt to match the Stitch header markup (Tailwind): sticky glass bar, 82px, container row, 13/15px nav links with active underline, Resources dropdown with chevron + Blog/Media badges, gold pill CTA, and a Tailwind mobile drawer. Logo mark reduced to 40px (38 <=1180, 36 <=768).
+- Regression found and fixed: Tailwind v4 ships a .container utility which, once the custom CSS moved into '@layer base', overrode the site's .container (width:100%, no side padding) so the logo/CTA touched the edges and sections went full-width. The site .container is now unlayered (width min(1280px,100%-96px); 100%-64 at <=1100; 100%-40 at <=768) so it wins; header/footer/sections align again. Header brand/CTA now have 80px side gaps at 1440px.
+- Mobile overflow fixed: '/register/rider' overflowed 86-180px because '.registration-layout .editorial-image' had a fixed height:360px with aspect-ratio:4/3, forcing a 480px width. Set width:100%/height:auto/aspect-ratio:4/3. Also added minmax(0,1fr) grid tracks and min-width:0 guards for the main grids/forms.
+- Responsive audit (Playwright, production build): 70 combos of widths 320/360/390/414/768 x 14 routes and 72 combos of 834/1024/1180/1280/1440/1920 x 12 routes -> zero horizontal overflow. Mobile menu opens (9 links) with no overflow. Re-verified on the Vercel production alias.
+- Redeployed to production and pushed to GitHub main.
