@@ -1,0 +1,7 @@
+node_modules
+.next
+.next-production
+.npm-cache
+.playwright-mcp
+tsconfig.tsbuildinfo
+*.log

@@ -1,0 +1,8 @@
+node_modules
+.next
+.next-production
+.npm-cache
+package-lock.json
+public
+next-env.d.ts
+.playwright-mcp

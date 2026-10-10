@@ -1,0 +1,10 @@
+node_modules/
+.next/
+.next-production/
+out/
+.env*
+*.tsbuildinfo
+.npm-cache/
+
+.vercel
+.playwright-mcp/
