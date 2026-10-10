@@ -79,53 +79,99 @@ export function Header() {
     document.addEventListener('keydown', key);
     return () => document.removeEventListener('keydown', key);
   }, [open]);
+  const navLink = (active: boolean) =>
+    `relative py-2 transition-colors ${
+      active
+        ? 'font-semibold text-[#081b36] after:absolute after:-bottom-0.5 after:left-0 after:h-[2px] after:w-full after:rounded-full after:bg-[#0759c7]'
+        : 'text-[#081b36]/70 hover:text-[#0759c7]'
+    }`;
   return (
     <>
       <InitialLoader />
       <NavigationProgress />
-      <header className={`site-header ${scrolled ? 'scrolled' : ''}`}>
-        <div className="container header-inner">
+      <header
+        className={`sticky top-0 z-50 w-full border-b border-[#081b36]/10 bg-white/95 backdrop-blur-[14px] transition-shadow ${
+          scrolled ? 'shadow-[0_10px_30px_rgba(8,27,54,0.06)]' : ''
+        }`}
+      >
+        <div className="container flex h-[82px] items-center justify-between">
           <Brand />
-          <nav className="desktop-nav" aria-label="Main navigation">
-            {navigation.slice(0, 5).map((n) => (
-              <Link
-                aria-current={pathname === n.href ? 'page' : undefined}
-                className={pathname === n.href ? 'active' : ''}
-                key={n.href}
-                href={n.href}
-              >
-                {n.title}
-              </Link>
-            ))}
-            <div className="nav-resources">
-              <button type="button">
-                Resources <ChevronDown size={15} aria-hidden="true" />
-              </button>
-              <div className="resource-menu">
-                <Link href="/news">News & Stories</Link>
-                <Link href="/gallery">Gallery</Link>
+          <div className="flex items-center gap-6 lg:gap-8">
+            <nav
+              className="hidden items-center gap-4 text-[13px] font-medium lg:flex xl:gap-7 xl:text-[15px]"
+              aria-label="Main navigation"
+            >
+              {navigation.slice(0, 5).map((n) => (
+                <Link
+                  key={n.href}
+                  href={n.href}
+                  aria-current={pathname === n.href ? 'page' : undefined}
+                  className={navLink(pathname === n.href)}
+                >
+                  {n.title}
+                </Link>
+              ))}
+              <div className="group relative py-2">
+                <button
+                  type="button"
+                  className="flex items-center gap-1.5 text-[#081b36]/70 transition-colors hover:text-[#0759c7]"
+                >
+                  Resources
+                  <ChevronDown
+                    size={15}
+                    aria-hidden="true"
+                    className="transition-transform duration-200 group-hover:rotate-180"
+                  />
+                </button>
+                <div className="invisible absolute left-0 top-full w-56 -translate-y-1 pt-2 opacity-0 transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+                  <div className="rounded-xl border border-[#081b36]/10 bg-white p-2 shadow-xl">
+                    <Link
+                      href="/news"
+                      className="flex items-center justify-between rounded-lg px-3.5 py-2.5 text-sm font-medium text-[#081b36]/80 transition hover:bg-slate-100 hover:text-[#0759c7]"
+                    >
+                      News &amp; Stories
+                      <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#081b36]/40">
+                        Blog
+                      </span>
+                    </Link>
+                    <Link
+                      href="/gallery"
+                      className="mt-0.5 flex items-center justify-between rounded-lg px-3.5 py-2.5 text-sm font-medium text-[#081b36]/80 transition hover:bg-slate-100 hover:text-[#0759c7]"
+                    >
+                      Gallery
+                      <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#081b36]/40">
+                        Media
+                      </span>
+                    </Link>
+                  </div>
+                </div>
               </div>
-            </div>
-            <Link className={pathname === '/contact' ? 'active' : ''} href="/contact">
-              Contact
+              <Link href="/contact" className={navLink(pathname === '/contact')}>
+                Contact
+              </Link>
+            </nav>
+            <Link
+              href="/contact"
+              className="hidden items-center gap-2 rounded-full bg-[#f4b41b] px-4 py-2.5 text-[13px] font-semibold text-[#081b36] shadow-[0_6px_18px_rgba(244,180,27,0.25)] transition hover:-translate-y-0.5 hover:bg-[#e6a812] lg:inline-flex xl:px-6 xl:text-[15px]"
+            >
+              Request a Quote <ArrowUpRight size={16} />
             </Link>
-          </nav>
-          <Link className="button button-gold header-quote" href="/contact">
-            Request a Quote <ArrowUpRight size={16} />
-          </Link>
-          <button
-            className="menu-toggle"
-            aria-label={open ? 'Close menu' : 'Open menu'}
-            aria-expanded={open}
-            aria-controls="mobile-navigation"
-            onClick={() => setOpen(!open)}
-          >
-            {open ? <X /> : <Menu />}
-          </button>
+            <button
+              className="text-[#081b36] lg:hidden"
+              aria-label={open ? 'Close menu' : 'Open menu'}
+              aria-expanded={open}
+              aria-controls="mobile-navigation"
+              onClick={() => setOpen(!open)}
+            >
+              {open ? <X /> : <Menu />}
+            </button>
+          </div>
         </div>
         <nav
           id="mobile-navigation"
-          className={`mobile-nav ${open ? 'open' : ''}`}
+          className={`lg:hidden ${
+            open ? 'block' : 'hidden'
+          } border-t border-[#081b36]/10 bg-white px-4 pb-6 pt-3 shadow-[0_20px_40px_rgba(8,27,54,0.1)]`}
           aria-label="Mobile navigation"
         >
           {[
@@ -133,12 +179,21 @@ export function Header() {
             { title: 'News & Stories', href: '/news' },
             { title: 'Gallery', href: '/gallery' },
           ].map((n) => (
-            <Link key={n.href} href={n.href} onClick={() => setOpen(false)}>
+            <Link
+              key={n.href}
+              href={n.href}
+              onClick={() => setOpen(false)}
+              className="flex items-center justify-between border-b border-[#081b36]/10 py-3 text-sm font-medium text-[#081b36]"
+            >
               {n.title}
-              <ArrowUpRight size={18} />
+              <ArrowUpRight size={16} />
             </Link>
           ))}
-          <Link className="button button-gold" href="/contact">
+          <Link
+            href="/contact"
+            onClick={() => setOpen(false)}
+            className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-[#f4b41b] px-6 py-3 text-[15px] font-semibold text-[#081b36]"
+          >
             Request a Quote
           </Link>
         </nav>
@@ -173,7 +228,7 @@ export function Footer() {
     <footer className="relative w-full overflow-hidden border-t border-[#D4AF37]/80 bg-[#06172e] text-slate-300">
       <div className="pointer-events-none absolute left-1/4 top-0 h-32 w-96 rounded-full bg-[#D4AF37]/5 blur-3xl" />
       <div className="pointer-events-none absolute bottom-10 right-10 h-64 w-96 rounded-full bg-[#0a2344]/50 blur-3xl" />
-      <div className="relative z-10 mx-auto max-w-[1440px] px-6 pb-10 pt-16 sm:px-10 lg:px-16">
+      <div className="container relative z-10 pb-10 pt-16">
         <div className="grid grid-cols-1 gap-12 border-b border-white/10 pb-16 md:grid-cols-2 lg:grid-cols-12 lg:gap-10">
           <div className="flex flex-col justify-between space-y-6 lg:col-span-4 lg:pr-8">
             <div>
